@@ -66,3 +66,51 @@
     }, 2200);
   });
 })();
+
+// Gallery lightbox
+(function () {
+  const items = Array.from(document.querySelectorAll('.gallery-item img'));
+  if (!items.length) return;
+
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+  const closeBtn = document.getElementById('lightboxClose');
+  const prevBtn = document.getElementById('lightboxPrev');
+  const nextBtn = document.getElementById('lightboxNext');
+
+  let index = 0;
+
+  function show(i) {
+    index = (i + items.length) % items.length;
+    lightboxImg.src = items[index].src;
+    lightboxImg.alt = items[index].alt;
+  }
+
+  function open(i) {
+    show(i);
+    lightbox.classList.add('open');
+  }
+
+  function close() {
+    lightbox.classList.remove('open');
+  }
+
+  items.forEach((img, i) => {
+    img.addEventListener('click', () => open(i));
+  });
+
+  closeBtn.addEventListener('click', close);
+  prevBtn.addEventListener('click', () => show(index - 1));
+  nextBtn.addEventListener('click', () => show(index + 1));
+
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) close();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') show(index - 1);
+    if (e.key === 'ArrowRight') show(index + 1);
+  });
+})();
