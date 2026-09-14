@@ -85,26 +85,25 @@
       </div>
       <div>
         <div class="contact-success" id="formSuccess">Thanks — we got your message and will be in touch within 1–2 business days.</div>
-        <form class="contact-form" id="contactForm" novalidate>
+        <div class="field-error" id="formError" hidden>Something went wrong sending your message — please try again or email us directly.</div>
+        <form class="contact-form" id="contactForm" action="https://formsubmit.co/cxeventdesign@gmail.com" method="POST" novalidate>
+          <input type="hidden" name="_subject" value="New inquiry from XX Event Design website" />
+          <input type="hidden" name="_template" value="table" />
+          <input type="hidden" name="_captcha" value="false" />
+          <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
           <div>
-            <input type="text" name="name" id="fieldName" placeholder="Name" />
+            <input type="text" name="Name" id="fieldName" placeholder="Name" />
             <div class="field-error" id="errorName" hidden>Please enter your name.</div>
           </div>
           <div>
-            <input type="email" name="email" id="fieldEmail" placeholder="Email" />
+            <input type="email" name="Email" id="fieldEmail" placeholder="Email" />
             <div class="field-error" id="errorEmail" hidden>Please enter a valid email address.</div>
           </div>
           <div>
-            <select name="services" id="fieldServices">
-              <option value="">Services</option>
-              <option value="design">Design</option>
-              <option value="planning">Planning</option>
-              <option value="experience">Experience</option>
-              <option value="day-of">Day-Of</option>
-            </select>
-            <div class="field-error" id="errorServices" hidden>Please choose a service.</div>
+            <input type="tel" name="Phone" id="fieldPhone" placeholder="Phone" />
+            <div class="field-error" id="errorPhone" hidden>Please enter a valid phone number.</div>
           </div>
-          <textarea name="message" id="fieldMessage" placeholder="Write here..." rows="5"></textarea>
+          <textarea name="Message" id="fieldMessage" placeholder="Write here..." rows="5"></textarea>
           <button type="submit" class="contact-submit">Submit</button>
         </form>
       </div>

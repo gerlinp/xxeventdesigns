@@ -887,6 +887,7 @@ a.service-card:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba
 .contact h2 { font-size: 28px; margin: 0 0 24px; }
 
 .contact-form { display: grid; gap: 12px; }
+.contact-form > div { display: grid; gap: 6px; }
 
 .contact-form input,
 .contact-form select,
@@ -910,7 +911,8 @@ a.service-card:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba
 .field-error {
   font-size: 12px;
   color: #C0392B;
-  margin-top: -6px;
+  margin: 0;
+  padding: 0 2px;
 }
 
 .contact-form textarea { resize: none; }
@@ -924,6 +926,12 @@ a.service-card:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba
   font-size: 14px;
   cursor: pointer;
   font-family: var(--sans);
+}
+
+.contact-submit:disabled {
+  background: var(--rule);
+  color: var(--ink-soft, #999);
+  cursor: not-allowed;
 }
 
 .contact-success {

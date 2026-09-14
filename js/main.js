@@ -23,12 +23,15 @@
   if (!form) return;
 
   const success = document.getElementById('formSuccess');
+  const formError = document.getElementById('formError');
+  const submitBtn = form.querySelector('.contact-submit');
   const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const phoneRe = /^[+]?[\d\s().-]{7,20}$/;
 
   const fields = {
     name: { input: document.getElementById('fieldName'), error: document.getElementById('errorName') },
     email: { input: document.getElementById('fieldEmail'), error: document.getElementById('errorEmail') },
-    services: { input: document.getElementById('fieldServices'), error: document.getElementById('errorServices') },
+    phone: { input: document.getElementById('fieldPhone'), error: document.getElementById('errorPhone') },
   };
 
   function setFieldError(field, hasError) {
@@ -36,34 +39,83 @@
     field.error.hidden = !hasError;
   }
 
+  function isNameOk() {
+    return fields.name.input.value.trim().length > 0;
+  }
+
+  function isEmailOk() {
+    return emailRe.test(fields.email.input.value.trim());
+  }
+
+  function isPhoneOk() {
+    const phoneValue = fields.phone.input.value.trim();
+    const phoneDigits = phoneValue.replace(/\D/g, '');
+    return phoneRe.test(phoneValue) && phoneDigits.length >= 7;
+  }
+
+  function updateSubmitState() {
+    submitBtn.disabled = !(isNameOk() && isEmailOk() && isPhoneOk());
+  }
+
+  updateSubmitState();
+  form.addEventListener('input', updateSubmitState);
+
+  function formatPhone(value) {
+    const digits = value.replace(/\D/g, '').slice(0, 10);
+    if (digits.length < 4) return digits;
+    if (digits.length < 7) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+  }
+
+  fields.phone.input.addEventListener('input', () => {
+    fields.phone.input.value = formatPhone(fields.phone.input.value);
+  });
+
+  fields.email.input.addEventListener('blur', () => {
+    fields.email.input.value = fields.email.input.value.trim().toLowerCase();
+  });
+
   function validate() {
-    let valid = true;
-
-    const nameOk = fields.name.input.value.trim().length > 0;
+    const nameOk = isNameOk();
     setFieldError(fields.name, !nameOk);
-    if (!nameOk) valid = false;
 
-    const emailOk = emailRe.test(fields.email.input.value.trim());
+    const emailOk = isEmailOk();
     setFieldError(fields.email, !emailOk);
-    if (!emailOk) valid = false;
 
-    const servicesOk = fields.services.input.value.trim().length > 0;
-    setFieldError(fields.services, !servicesOk);
-    if (!servicesOk) valid = false;
+    const phoneOk = isPhoneOk();
+    setFieldError(fields.phone, !phoneOk);
 
-    return valid;
+    return nameOk && emailOk && phoneOk;
   }
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     if (!validate()) return;
 
-    success.classList.add('visible');
-    form.reset();
+    if (formError) formError.hidden = true;
+    submitBtn.disabled = true;
 
-    setTimeout(() => {
-      success.classList.remove('visible');
-    }, 2200);
+    fetch(form.action, {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      body: new FormData(form),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('Request failed');
+
+        success.classList.add('visible');
+        form.reset();
+
+        setTimeout(() => {
+          success.classList.remove('visible');
+        }, 2200);
+      })
+      .catch(() => {
+        if (formError) formError.hidden = false;
+      })
+      .finally(() => {
+        updateSubmitState();
+      });
   });
 })();
 
